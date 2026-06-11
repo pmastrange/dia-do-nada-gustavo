@@ -177,7 +177,7 @@
             100% { transform: translateY(105dvh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- TELA 2: HOMEM ARANHA DA TEIA --- */
+        /* --- TELA 2: HOMEM ARANHA DA TEIA (MAIOR) --- */
         #screen2 {
             display: none;
             position: relative;
@@ -190,7 +190,7 @@
 
         .spidey2-container {
             position: absolute;
-            top: -450px;
+            top: -550px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -203,34 +203,36 @@
         }
 
         .spidey2-container.ascended {
-            top: -650px !important;
+            top: -750px !important;
             transition: top 0.8s ease-in;
         }
 
         .web-line {
-            width: 2px;
-            height: 100px;
+            width: 3px;
+            height: 80px;
             background-color: #eee;
             box-shadow: 0 0 5px #fff;
         }
 
+        /* MODIFICAÇÃO: Imagem bem maior */
         .spidey2-img {
-            width: 140px;
+            width: 200px; 
             cursor: pointer;
         }
 
+        /* MODIFICAÇÃO: Mensagem maior e adaptada */
         .speech-bubble {
             position: relative;
             background: #fff;
             color: #000;
             border: 3px solid #000;
             border-radius: 10px;
-            padding: 10px;
+            padding: 14px;
             font-weight: bold;
-            font-size: 1rem;
-            width: 160px;
+            font-size: 1.15rem;
+            width: 230px;
             text-align: center;
-            box-shadow: 4px 4px 0px #d11a2a;
+            box-shadow: 5px 5px 0px #d11a2a;
             margin-top: 8px;
             text-transform: uppercase;
         }
@@ -274,7 +276,7 @@
             text-align: center;
             box-shadow: 0 0 20px rgba(255,255,255,0.15);
             position: absolute;
-            bottom: 8%;
+            bottom: 6%;
             animation: popIn 0.3s forwards;
         }
 
@@ -290,18 +292,62 @@
             font-weight: bold;
         }
 
-        /* --- TELA 3: EXPLOSÃO --- */
-        #spidey3 {
+        /* --- TELA 3: CONTAINER DA EXPLOSÃO --- */
+        #screen3 {
             display: none;
             position: absolute;
-            width: 240px;
+            inset: 0;
+            width: 100vw;
+            height: 100dvh;
             z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #spidey3 {
+            width: 260px;
             animation: explode 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.3) forwards;
         }
 
         @keyframes explode {
             0% { transform: scale(0) rotate(0deg); filter: brightness(3); }
             100% { transform: scale(1) rotate(720deg); }
+        }
+
+        /* MODIFICAÇÃO: Sinalização piscando para o clique final */
+        .signal-btn {
+            margin-top: 25px;
+            background: #ffcc00;
+            color: #000;
+            border: 3px solid #000;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
+            animation: signalPulse 0.8s infinite alternate;
+            cursor: pointer;
+        }
+
+        @keyframes signalPulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); }
+            100% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 204, 0, 0.9); }
+        }
+
+        /* MODIFICAÇÃO: Mensagem Final */
+        .final-verdict {
+            display: none;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ff4d4d;
+            text-align: center;
+            max-width: 280px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+            animation: popIn 0.3s forwards;
         }
 
         .flash {
@@ -329,6 +375,7 @@
 
     <div class="flash" id="flashScreen"></div>
 
+    <!-- POP-UP DO SEGUNDO ERRO -->
     <div class="angry-modal" id="angryModal">
         <div class="angry-content">
             <div class="angry-text">É UMA DATA GUSTAVO, TEM DIA, MÊS E ANO, INFERNO!</div>
@@ -336,6 +383,7 @@
         </div>
     </div>
 
+    <!-- TELA 1 -->
     <div id="screen1">
         <p class="volume-notice">🔊 Aumenta o volume!</p>
         <div class="padlock-container" id="padlock" onclick="revealInputArea()">🔒</div>
@@ -348,35 +396,39 @@
         <div class="hint" id="hintText"></div>
     </div>
 
+    <!-- TELA 2 -->
     <div id="screen2">
         <div class="spidey2-container" id="spideyContainer2">
             <div class="web-line"></div>
             <img src="spiderman2.jpg" alt="Homem Aranha Teia" class="spidey2-img" onclick="openLetter()">
-            <div class="speech-bubble">Abre essa porcaia</div>
+            <div class="speech-bubble">abre essa porcaria clicando no miranha</div>
         </div>
 
         <div class="letter-modal" id="letterModal">
-            <p class="letter-text">É muito dificil n me estressar com você, ainda não vou falar com você e esse é seu presente diário do nada, passar bem, tchau!</p>
+            <p class="letter-text">É muito dificil n me estressar com você, ainda não vou falar com você e esse é seu presente de dia do nada, passar bem, tchau!</p>
             <button onclick="triggerFinalSequence()">Finalizar</button>
         </div>
     </div>
 
-    <img src="spiderman3.jpg" alt="Spidey 3" id="spidey3">
+    <!-- TELA 3 (CONTAINER DE ENCERRAMENTO) -->
+    <div id="screen3">
+        <img src="spiderman3.jpg" alt="Spidey 3" id="spidey3">
+        <button class="signal-btn" id="signalBtn" onclick="clearMiranha3()">💥 CONCLUIR SEU DESTINO 💥</button>
+        <div class="final-verdict" id="finalVerdict">você não merece o miranha nem o buque, tchau</div>
+    </div>
 
     <script>
         let wrongAttempts = 0;
         let audioStarted = false;
 
-        // --- SISTEMA DE AUDIO ATIVADO POR TOQUE ---
         function startAudio() {
             if (!audioStarted) {
                 const audio = document.getElementById('bgMusic');
-                audio.play().catch(err => console.log("Aguardando interação final"));
+                audio.play().catch(err => console.log("Interação requerida"));
                 audioStarted = true;
             }
         }
 
-        // --- TEMPESTADE DE MINI SPIDEYS ---
         function createMiniSpidey() {
             if (document.getElementById('screen1').style.display === 'none') return;
             
@@ -394,10 +446,8 @@
         }
         setInterval(createMiniSpidey, 150);
 
-        // --- INTERAÇÃO DO CADEADO ---
         function revealInputArea() {
-            startAudio(); // Toca a música no primeiro clique
-            
+            startAudio(); 
             const inputArea = document.getElementById('inputArea');
             inputArea.style.display = 'flex';
             
@@ -406,9 +456,8 @@
             }, 50);
         }
 
-        // --- VALIDAÇÃO DA SENHA ---
         function checkPassword() {
-            startAudio(); // Garante o áudio ativo se ele ignorar o fluxo
+            startAudio(); 
             const input = document.getElementById('passwordInput').value.trim();
             const hintElement = document.getElementById('hintText');
             
@@ -457,9 +506,19 @@
                 const flash = document.getElementById('flashScreen');
                 flash.classList.add('active');
 
-                const spidey3 = document.getElementById('spidey3');
-                spidey3.style.display = 'block';
+                // Ativa a tela 3 (Miranha 3 + Botão de Sinalização)
+                document.getElementById('screen3').style.display = 'flex';
             }, 850);
+        }
+
+        // MODIFICAÇÃO: Evento do clique final na sinalização
+        function clearMiranha3() {
+            // Some com a imagem do Miranha 3 e o botão chamativo
+            document.getElementById('spidey3').style.display = 'none';
+            document.getElementById('signalBtn').style.display = 'none';
+            
+            // Exibe o xeque-mate final em letras vermelhas
+            document.getElementById('finalVerdict').style.display = 'block';
         }
     </script>
 </body>
