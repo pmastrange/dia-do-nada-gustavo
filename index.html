@@ -34,6 +34,16 @@
             max-width: 340px;
         }
 
+        .volume-notice {
+            font-size: 0.9rem;
+            color: #ffcc00;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.4);
+        }
+
         .padlock-container {
             font-size: 85px;
             cursor: pointer;
@@ -55,7 +65,6 @@
             line-height: 1.3;
         }
 
-        /* Começa escondido por padrão */
         .input-area {
             display: none; 
             flex-direction: column;
@@ -105,6 +114,52 @@
             font-weight: bold;
             min-height: 40px;
             line-height: 1.3;
+        }
+
+        /* --- POP-UP DE FÚRIA (2º ERRO) --- */
+        .angry-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100dvh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .angry-content {
+            background: #d11a2a;
+            color: #fff;
+            border: 5px solid #fff;
+            padding: 30px 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 0 30px #ff0000;
+            width: 100%;
+            max-width: 320px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+        }
+
+        .angry-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            animation: angryPulse 0.5s infinite ease-in-out alternate;
+        }
+
+        @keyframes angryPulse {
+            0% { transform: scale(0.96); text-shadow: 0 0 5px #000; }
+            100% { transform: scale(1.05); text-shadow: 0 0 15px #fff; }
+        }
+
+        .angry-btn {
+            background-color: #000;
+            border: 2px solid #fff;
+            width: 100%;
         }
 
         /* Chuva de Aranhas */
@@ -270,9 +325,19 @@
 </head>
 <body>
 
+    <audio id="bgMusic" src="musica.mp3" loop></audio>
+
     <div class="flash" id="flashScreen"></div>
 
+    <div class="angry-modal" id="angryModal">
+        <div class="angry-content">
+            <div class="angry-text">É UMA DATA GUSTAVO, TEM DIA, MÊS E ANO, INFERNO!</div>
+            <button class="angry-btn" onclick="closeAngryModal()">Tentar de novo</button>
+        </div>
+    </div>
+
     <div id="screen1">
+        <p class="volume-notice">🔊 Aumenta o volume!</p>
         <div class="padlock-container" id="padlock" onclick="revealInputArea()">🔒</div>
         <p class="instruction">cadeado ta pulsando, voce tem mão, é só clicar</p>
         
@@ -291,7 +356,7 @@
         </div>
 
         <div class="letter-modal" id="letterModal">
-            <p class="letter-text">É muito dificil n me estressar com você, ainda não vou falar com você e esse é seu presente de dia do nada, passar bem, tchau!</p>
+            <p class="letter-text">É muito dificil n me estressar com você, ainda não vou falar com você e esse é seu presente diário do nada, passar bem, tchau!</p>
             <button onclick="triggerFinalSequence()">Finalizar</button>
         </div>
     </div>
@@ -299,7 +364,19 @@
     <img src="spiderman3.jpg" alt="Spidey 3" id="spidey3">
 
     <script>
-        // --- TEMPESTADE DE MINI SPIDEYS (150ms = Muito mais Aranhas) ---
+        let wrongAttempts = 0;
+        let audioStarted = false;
+
+        // --- SISTEMA DE AUDIO ATIVADO POR TOQUE ---
+        function startAudio() {
+            if (!audioStarted) {
+                const audio = document.getElementById('bgMusic');
+                audio.play().catch(err => console.log("Aguardando interação final"));
+                audioStarted = true;
+            }
+        }
+
+        // --- TEMPESTADE DE MINI SPIDEYS ---
         function createMiniSpidey() {
             if (document.getElementById('screen1').style.display === 'none') return;
             
@@ -319,17 +396,19 @@
 
         // --- INTERAÇÃO DO CADEADO ---
         function revealInputArea() {
+            startAudio(); // Toca a música no primeiro clique
+            
             const inputArea = document.getElementById('inputArea');
             inputArea.style.display = 'flex';
             
-            // Foca automaticamente no campo para abrir o teclado do celular
             setTimeout(() => {
                 document.getElementById('passwordInput').focus();
             }, 50);
         }
 
-        // --- VALIDAÇÃO DA SENHA ATUALIZADA ---
+        // --- VALIDAÇÃO DA SENHA ---
         function checkPassword() {
+            startAudio(); // Garante o áudio ativo se ele ignorar o fluxo
             const input = document.getElementById('passwordInput').value.trim();
             const hintElement = document.getElementById('hintText');
             
@@ -338,8 +417,20 @@
             if (input === senhaCorreta) {
                 transitionToScreen2();
             } else {
-                hintElement.innerText = "nossa data especial, você lembra Gustavo?";
+                wrongAttempts++;
+                if (wrongAttempts === 2) {
+                    document.getElementById('angryModal').style.display = 'flex';
+                } else {
+                    hintElement.innerText = "nossa data especial, você lembra Gustavo?";
+                }
             }
+        }
+
+        function closeAngryModal() {
+            document.getElementById('angryModal').style.display = 'none';
+            const inputField = document.getElementById('passwordInput');
+            inputField.value = "";
+            inputField.focus();
         }
 
         function transitionToScreen2() {
