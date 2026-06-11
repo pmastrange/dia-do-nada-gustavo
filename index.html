@@ -1,1 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dia do Nada</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Impact', sans-serif;
+        }
 
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- TELA 1: CADEADO --- */
+        #screen1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .padlock-container {
+            font-size: 80px;
+            cursor: pointer;
+            animation: pulse 1.2s infinite ease-in-out;
+            user-select: none;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .instruction {
+            font-size: 1.2rem;
+            max-width: 320px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #fff;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #d11a2a;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #ff2e3b;
+            transform: scale(1.05);
+        }
+
+        .hint {
+            color: #ff4d4d;
+            margin-top: 15px;
+            font-size: 1rem;
+            max-width: 280px;
+            min-height: 40px;
+            font-weight: bold;
+        }
+
+        /* Mini Homens-Aranhas caindo */
+        .falling-spidey {
+            position: absolute;
+            top: -50px;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- TELA 2: HOMEM ARANHA DESCENTE --- */
+        #screen2 {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .spidey2-container {
+            position: absolute;
+            top: -450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .spidey2-container.descended {
+            top: 0px;
+        }
+
+        .spidey2-container.ascended {
+            top: -650px !important;
+            transition: top 1s ease-in;
+        }
+
+        .web-line {
+            width: 2px;
+            height: 120px;
+            background-color: #eee;
+            box-shadow: 0 0 5px #fff;
+        }
+
+        .spidey2-img {
+            width: 160px;
+            cursor: pointer;
+        }
+
+        /* Balão de Gibi Real oficial */
+        .speech-bubble {
+            position: relative;
+            background: #fff;
+            color: #000;
+            border: 3px solid #000;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            max-width: 180px;
+            text-align: center;
+            box-shadow: 4px 4px 0px #d11a2a;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 15px 15px;
+            border-style: solid;
+            border-color: #fff transparent;
+            display: block;
+            width: 0;
+        }
+        
+        .speech-bubble:before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 17px 17px;
+            border-style: solid;
+            border-color: #000 transparent;
+            display: block;
+            width: 0;
+            z-index: -1;
+        }
+
+        /* Caixa da Carta / Presente */
+        .letter-modal {
+            display: none;
+            background: white;
+            color: black;
+            border: 4px dashed #d11a2a;
+            padding: 22px;
+            border-radius: 12px;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255,255,255,0.2);
+            position: absolute;
+            bottom: 100px;
+            animation: popIn 0.3s forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .letter-text {
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+            line-height: 1.5;
+            font-weight: bold;
+        }
+
+        /* --- TELA 3: EXPLOSÃO DO HOMEM ARANHA 3 --- */
+        #spidey3 {
+            display: none;
+            position: absolute;
+            width: 280px;
+            z-index: 100;
+            animation: explode 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.4) forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0) rotate(0deg); filter: brightness(3) blur(5px); }
+            50% { filter: brightness(1.5) blur(0px); }
+            100% { transform: scale(1) rotate(720deg); }
+        }
+
+        .flash {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .flash.active {
+            animation: flashAnim 0.3s ease-out;
+        }
+
+        @keyframes flashAnim {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flash" id="flashScreen"></div>
+
+    <div id="screen1">
+        <div class="padlock-container" id="padlock" onclick="focusInput()">🔒</div>
+        <p class="instruction">cadeado ta pulsando, voce tem mão, é só clicar</p>
+        <div class="input-area">
+            <input type="text" id="passwordInput" placeholder="Digite a data...">
+            <button onclick="checkPassword()">Desbloquear</button>
+        </div>
+        <div class="hint" id="hintText"></div>
+    </div>
+
+    <div id="screen2">
+        <div class="spidey2-container" id="spideyContainer2">
+            <div class="web-line"></div>
+            <img src="spiderman2.jpg" alt="Homem Aranha Teia" class="spidey2-img" onclick="openLetter()">
+            <div class="speech-bubble">Abre essa porcaia</div>
+        </div>
+
+        <div class="letter-modal" id="letterModal">
+            <p class="letter-text">É muito dificil n me estressar com você, ainda não vou falar com você e esse é seu presente de dia do nada, passar bem, tchau!</p>
+            <button onclick="triggerFinalSequence()">Finalizar</button>
+        </div>
+    </div>
+
+    <img src="spiderman3.jpg" alt="Spidey 3" id="spidey3">
+
+    <script>
+        // --- CHUVA DE MINI SPIDEYS (ESTILO FLORES/PÉTALAS) ---
+        function createMiniSpidey() {
+            if (document.getElementById('screen1').style.display === 'none') return;
+            
+            const spidey = document.createElement('img');
+            spidey.src = 'spiderman1.jpg'; 
+            spidey.classList.add('falling-spidey');
+            
+            // Configurações de queda randômica
+            spidey.style.left = Math.random() * 100 + 'vw';
+            spidey.style.animationDuration = (Math.random() * 2.5 + 3.5) + 's'; 
+            spidey.style.width = (Math.random() * 15 + 25) + 'px'; // Miniatura bem pequena
+            
+            document.body.appendChild(spidey);
+            
+            setTimeout(() => {
+                spidey.remove();
+            }, 6000);
+        }
+        setInterval(createMiniSpidey, 350);
+
+        function focusInput() {
+            document.getElementById('passwordInput').focus();
+        }
+
+        // --- VALIDAÇÃO DA SENHA ---
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value.trim();
+            const hintElement = document.getElementById('hintText');
+            
+            // COLOQUE A DATA DE VOCÊS AQUI DENTRO DAS ASPAS (Ex: "12/06" ou "1206")
+            const senhaCorreta = "12/06"; 
+
+            if (input === senhaCorreta) {
+                transitionToScreen2();
+            } else {
+                hintElement.innerText = "nossa data especial, você lembra Gustavo?";
+            }
+        }
+
+        // --- ENTRADA DO HOMEM ARANHA 2 ---
+        function transitionToScreen2() {
+            document.getElementById('screen1').style.display = 'none';
+            document.getElementById('screen2').style.display = 'flex';
+            
+            setTimeout(() => {
+                document.getElementById('spideyContainer2').classList.add('descended');
+            }, 150);
+        }
+
+        // --- CLIQUE PARA ABRIR A CARTA ---
+        function openLetter() {
+            document.getElementById('letterModal').style.display = 'block';
+        }
+
+        // --- SEQUÊNCIA DE MEIO SEGUNDO DA EXPLOSÃO (SPIDEY 3) ---
+        function triggerFinalSequence() {
+            document.getElementById('letterModal').style.display = 'none';
+            
+            // Aranha 2 sobe de volta pela teia
+            const container2 = document.getElementById('spideyContainer2');
+            container2.classList.remove('descended');
+            container2.classList.add('ascended');
+
+            // Tempo exato para o 2 sumir e o 3 explodir na tela
+            setTimeout(() => {
+                const flash = document.getElementById('flashScreen');
+                flash.classList.add('active');
+
+                const spidey3 = document.getElementById('spidey3');
+                spidey3.style.display = 'block';
+            }, 900);
+        }
+    </script>
+</body>
+</html>
