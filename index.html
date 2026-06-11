@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dia do Nada</title>
     <style>
         * {
@@ -10,13 +10,14 @@
             margin: 0;
             padding: 0;
             font-family: 'Comic Sans MS', 'Impact', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: #000;
             color: #fff;
             overflow: hidden;
-            height: 100vh;
+            height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,71 +30,84 @@
             align-items: center;
             text-align: center;
             z-index: 10;
+            width: 90%;
+            max-width: 340px;
         }
 
         .padlock-container {
-            font-size: 80px;
+            font-size: 85px;
             cursor: pointer;
             animation: pulse 1.2s infinite ease-in-out;
             user-select: none;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
             100% { transform: scale(1); }
         }
 
         .instruction {
-            font-size: 1.2rem;
-            max-width: 320px;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+            line-height: 1.3;
         }
 
+        /* Começa escondido por padrão */
         .input-area {
-            display: flex;
+            display: none; 
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         input {
-            padding: 10px;
-            border-radius: 5px;
+            padding: 14px;
+            border-radius: 8px;
             border: 2px solid #fff;
-            background: #222;
+            background: #111;
             color: #fff;
             text-align: center;
-            font-size: 1rem;
+            font-size: 16px; 
+            width: 100%;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 14px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: #d11a2a;
             color: white;
             font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
+            min-height: 48px;
             transition: 0.2s;
         }
 
-        button:hover {
+        button:active {
             background-color: #ff2e3b;
-            transform: scale(1.05);
+            transform: scale(0.98);
         }
 
         .hint {
             color: #ff4d4d;
             margin-top: 15px;
-            font-size: 1rem;
-            max-width: 280px;
-            min-height: 40px;
+            font-size: 0.95rem;
             font-weight: bold;
+            min-height: 40px;
+            line-height: 1.3;
         }
 
-        /* Mini Homens-Aranhas caindo */
+        /* Chuva de Aranhas */
         .falling-spidey {
             position: absolute;
             top: -50px;
@@ -105,15 +119,15 @@
         @keyframes fall {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
-            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(105dvh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- TELA 2: HOMEM ARANHA DESCENTE --- */
+        /* --- TELA 2: HOMEM ARANHA DA TEIA --- */
         #screen2 {
             display: none;
             position: relative;
             width: 100%;
-            height: 100vh;
+            height: 100dvh;
             flex-direction: column;
             align-items: center;
             z-index: 10;
@@ -125,7 +139,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: top 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            width: 100%;
         }
 
         .spidey2-container.descended {
@@ -134,45 +149,44 @@
 
         .spidey2-container.ascended {
             top: -650px !important;
-            transition: top 1s ease-in;
+            transition: top 0.8s ease-in;
         }
 
         .web-line {
             width: 2px;
-            height: 120px;
+            height: 100px;
             background-color: #eee;
             box-shadow: 0 0 5px #fff;
         }
 
         .spidey2-img {
-            width: 160px;
+            width: 140px;
             cursor: pointer;
         }
 
-        /* Balão de Gibi Real oficial */
         .speech-bubble {
             position: relative;
             background: #fff;
             color: #000;
             border: 3px solid #000;
             border-radius: 10px;
-            padding: 12px;
+            padding: 10px;
             font-weight: bold;
-            font-size: 1.1rem;
-            max-width: 180px;
+            font-size: 1rem;
+            width: 160px;
             text-align: center;
             box-shadow: 4px 4px 0px #d11a2a;
-            margin-top: 10px;
+            margin-top: 8px;
             text-transform: uppercase;
         }
 
         .speech-bubble:after {
             content: '';
             position: absolute;
-            top: -15px;
+            top: -13px;
             left: 50%;
             transform: translateX(-50%);
-            border-width: 0 15px 15px;
+            border-width: 0 13px 13px;
             border-style: solid;
             border-color: #fff transparent;
             display: block;
@@ -182,10 +196,10 @@
         .speech-bubble:before {
             content: '';
             position: absolute;
-            top: -20px;
+            top: -18px;
             left: 50%;
             transform: translateX(-50%);
-            border-width: 0 17px 17px;
+            border-width: 0 15px 15px;
             border-style: solid;
             border-color: #000 transparent;
             display: block;
@@ -193,19 +207,19 @@
             z-index: -1;
         }
 
-        /* Caixa da Carta / Presente */
         .letter-modal {
             display: none;
             background: white;
             color: black;
-            border: 4px dashed #d11a2a;
-            padding: 22px;
+            border: 3px dashed #d11a2a;
+            padding: 18px;
             border-radius: 12px;
-            max-width: 320px;
+            width: 85%;
+            max-width: 310px;
             text-align: center;
-            box-shadow: 0 0 25px rgba(255,255,255,0.2);
+            box-shadow: 0 0 20px rgba(255,255,255,0.15);
             position: absolute;
-            bottom: 100px;
+            bottom: 8%;
             animation: popIn 0.3s forwards;
         }
 
@@ -215,30 +229,29 @@
         }
 
         .letter-text {
-            font-size: 1.1rem;
-            margin-bottom: 18px;
-            line-height: 1.5;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
             font-weight: bold;
         }
 
-        /* --- TELA 3: EXPLOSÃO DO HOMEM ARANHA 3 --- */
+        /* --- TELA 3: EXPLOSÃO --- */
         #spidey3 {
             display: none;
             position: absolute;
-            width: 280px;
+            width: 240px;
             z-index: 100;
-            animation: explode 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.4) forwards;
+            animation: explode 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.3) forwards;
         }
 
         @keyframes explode {
-            0% { transform: scale(0) rotate(0deg); filter: brightness(3) blur(5px); }
-            50% { filter: brightness(1.5) blur(0px); }
+            0% { transform: scale(0) rotate(0deg); filter: brightness(3); }
             100% { transform: scale(1) rotate(720deg); }
         }
 
         .flash {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
             background: white;
             opacity: 0;
             pointer-events: none;
@@ -260,9 +273,10 @@
     <div class="flash" id="flashScreen"></div>
 
     <div id="screen1">
-        <div class="padlock-container" id="padlock" onclick="focusInput()">🔒</div>
+        <div class="padlock-container" id="padlock" onclick="revealInputArea()">🔒</div>
         <p class="instruction">cadeado ta pulsando, voce tem mão, é só clicar</p>
-        <div class="input-area">
+        
+        <div class="input-area" id="inputArea">
             <input type="text" id="passwordInput" placeholder="Digite a data...">
             <button onclick="checkPassword()">Desbloquear</button>
         </div>
@@ -285,7 +299,7 @@
     <img src="spiderman3.jpg" alt="Spidey 3" id="spidey3">
 
     <script>
-        // --- CHUVA DE MINI SPIDEYS (ESTILO FLORES/PÉTALAS) ---
+        // --- TEMPESTADE DE MINI SPIDEYS (150ms = Muito mais Aranhas) ---
         function createMiniSpidey() {
             if (document.getElementById('screen1').style.display === 'none') return;
             
@@ -293,30 +307,33 @@
             spidey.src = 'spiderman1.jpg'; 
             spidey.classList.add('falling-spidey');
             
-            // Configurações de queda randômica
-            spidey.style.left = Math.random() * 100 + 'vw';
-            spidey.style.animationDuration = (Math.random() * 2.5 + 3.5) + 's'; 
-            spidey.style.width = (Math.random() * 15 + 25) + 'px'; // Miniatura bem pequena
+            spidey.style.left = Math.random() * 90 + 'vw'; 
+            spidey.style.animationDuration = (Math.random() * 2 + 2.5) + 's'; 
+            spidey.style.width = (Math.random() * 12 + 20) + 'px'; 
             
             document.body.appendChild(spidey);
             
+            setTimeout(() => { spidey.remove(); }, 4500);
+        }
+        setInterval(createMiniSpidey, 150);
+
+        // --- INTERAÇÃO DO CADEADO ---
+        function revealInputArea() {
+            const inputArea = document.getElementById('inputArea');
+            inputArea.style.display = 'flex';
+            
+            // Foca automaticamente no campo para abrir o teclado do celular
             setTimeout(() => {
-                spidey.remove();
-            }, 6000);
-        }
-        setInterval(createMiniSpidey, 350);
-
-        function focusInput() {
-            document.getElementById('passwordInput').focus();
+                document.getElementById('passwordInput').focus();
+            }, 50);
         }
 
-        // --- VALIDAÇÃO DA SENHA ---
+        // --- VALIDAÇÃO DA SENHA ATUALIZADA ---
         function checkPassword() {
             const input = document.getElementById('passwordInput').value.trim();
             const hintElement = document.getElementById('hintText');
             
-            // COLOQUE A DATA DE VOCÊS AQUI DENTRO DAS ASPAS (Ex: "12/06" ou "1206")
-            const senhaCorreta = "12/06"; 
+            const senhaCorreta = "13092024"; 
 
             if (input === senhaCorreta) {
                 transitionToScreen2();
@@ -325,7 +342,6 @@
             }
         }
 
-        // --- ENTRADA DO HOMEM ARANHA 2 ---
         function transitionToScreen2() {
             document.getElementById('screen1').style.display = 'none';
             document.getElementById('screen2').style.display = 'flex';
@@ -335,28 +351,24 @@
             }, 150);
         }
 
-        // --- CLIQUE PARA ABRIR A CARTA ---
         function openLetter() {
             document.getElementById('letterModal').style.display = 'block';
         }
 
-        // --- SEQUÊNCIA DE MEIO SEGUNDO DA EXPLOSÃO (SPIDEY 3) ---
         function triggerFinalSequence() {
             document.getElementById('letterModal').style.display = 'none';
             
-            // Aranha 2 sobe de volta pela teia
             const container2 = document.getElementById('spideyContainer2');
             container2.classList.remove('descended');
             container2.classList.add('ascended');
 
-            // Tempo exato para o 2 sumir e o 3 explodir na tela
             setTimeout(() => {
                 const flash = document.getElementById('flashScreen');
                 flash.classList.add('active');
 
                 const spidey3 = document.getElementById('spidey3');
                 spidey3.style.display = 'block';
-            }, 900);
+            }, 850);
         }
     </script>
 </body>
